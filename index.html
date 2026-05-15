@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="프론트엔드 개발자 포트폴리오 — 프로젝트, 기술 스택, 연락처" />
+  <title>Portfolio | 개발자 포트폴리오</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f;
+      --bg-elevated: #12121a;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent: #22d3ee;
+      --accent-dim: rgba(34, 211, 238, 0.15);
+      --accent-2: #a78bfa;
+      --radius: 14px;
+      --header-h: 64px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .noise {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+    .glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.35;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .glow-1 { top: -200px; right: -100px; background: var(--accent); }
+    .glow-2 { bottom: 10%; left: -200px; background: var(--accent-2); opacity: 0.2; }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-h);
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.75);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--text), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    nav { display: flex; gap: 28px; align-items: center; }
+    nav a {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+    .nav-cta {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: 1px solid rgba(34, 211, 238, 0.35);
+    }
+    .nav-cta:hover { background: rgba(34, 211, 238, 0.25); color: #fff; }
+    .menu-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .mobile-drawer {
+      display: none;
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      right: 0;
+      padding: 16px 20px 24px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 4px;
+      z-index: 99;
+    }
+    .mobile-drawer.open { display: flex; }
+    .mobile-drawer a {
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .mobile-drawer a:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+
+    main { position: relative; z-index: 1; }
+    .section { padding: 88px 20px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--header-h);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 48px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-lead {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      color: #042f2e;
+      box-shadow: 0 8px 32px rgba(34, 211, 238, 0.25);
+    }
+    .btn-primary:hover { box-shadow: 0 12px 40px rgba(34, 211, 238, 0.35); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    .hero-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+    .hero-card h3 { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
+    .stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-val { font-weight: 800; color: var(--accent); }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .section h2 {
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .about-text { color: var(--text-muted); font-size: 1.02rem; }
+    .about-text p + p { margin-top: 16px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .tag {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .skills-wrap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .skill-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-card:hover {
+      border-color: rgba(34, 211, 238, 0.35);
+      transform: translateY(-2px);
+    }
+    .skill-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 12px; }
+    .skill-card ul { list-style: none; color: var(--text-muted); font-size: 0.9rem; }
+    .skill-card li { padding: 4px 0; padding-left: 14px; position: relative; }
+    .skill-card li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.65em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .project-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+    .project-card:hover { border-color: rgba(167, 139, 250, 0.4); }
+    .project-thumb {
+      height: 160px;
+      background: linear-gradient(145deg, #1e1b4b 0%, #0f172a 50%, #134e4a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+    .project-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .project-body h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+    .project-body p { color: var(--text-muted); font-size: 0.92rem; flex: 1; margin-bottom: 16px; }
+    .project-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+    }
+    .project-links { display: flex; gap: 10px; }
+    .project-links a {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .project-links a:hover { text-decoration: underline; }
+
+    .contact-box {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 48px 32px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .contact-box p { color: var(--text-muted); margin-bottom: 24px; }
+    .email-link {
+      display: inline-block;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+      word-break: break-all;
+    }
+    .socials { display: flex; justify-content: center; gap: 16px; margin-top: 28px; }
+    .socials a {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .socials a:hover { color: var(--accent); border-color: var(--accent); }
+
+    footer {
+      padding: 32px 20px 48px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-card { max-width: 400px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .skills-wrap { grid-template-columns: 1fr; }
+      nav { display: none; }
+      .menu-toggle { display: flex; align-items: center; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="glow glow-1" aria-hidden="true"></div>
+  <div class="glow glow-2" aria-hidden="true"></div>
+
+  <header>
+    <div class="nav-inner">
+      <a class="logo" href="#">PORTFOLIO</a>
+      <nav aria-label="주요 메뉴">
+        <a href="#about">소개</a>
+        <a href="#skills">기술</a>
+        <a href="#projects">프로젝트</a>
+        <a href="#contact">연락</a>
+        <a class="nav-cta" href="#contact">협업 문의</a>
+      </nav>
+      <button class="menu-toggle" type="button" id="menu-btn" aria-expanded="false" aria-controls="drawer" aria-label="메뉴 열기">☰</button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="drawer" hidden>
+    <a href="#about">소개</a>
+    <a href="#skills">기술</a>
+    <a href="#projects">프로젝트</a>
+    <a href="#contact">연락</a>
+  </div>
+
+  <main>
+    <section class="hero section">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Frontend · Product</p>
+          <h1>안녕하세요,<br /><span>사용자 경험</span>을 설계하는<br />개발자입니다.</h1>
+          <p class="hero-lead">
+            웹 접근성과 성능을 함께 고려하며, 기획·디자인과 긴밀히 협업해
+            비즈니스 목표에 맞는 화면을 구현합니다. 아래 내용은 예시이니 본인 정보로 바꿔 쓰시면 됩니다.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects">프로젝트 보기</a>
+            <a class="btn btn-ghost" href="#contact">연락하기</a>
+          </div>
+        </div>
+        <aside class="hero-card" aria-label="요약 정보">
+          <h3>At a glance</h3>
+          <div class="stat-row"><span>경력</span><span class="stat-val">3년+</span></div>
+          <div class="stat-row"><span>관심 분야</span><span class="stat-val">UI / DX</span></div>
+          <div class="stat-row"><span>위치</span><span class="stat-val">Seoul</span></div>
+          <div class="stat-row"><span>상태</span><span class="stat-val">Open to work</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="about" style="background: rgba(255,255,255,0.02);">
+      <div class="container">
+        <p class="section-title">About</p>
+        <h2>문제를 작은 단위로 나누고, 검증 가능한 코드로 풀어갑니다.</h2>
+        <div class="about-grid">
+          <div class="about-text">
+            <p>
+              React·TypeScript 기반의 제품 경험을 주로 다뤄 왔고, 디자인 시스템과
+              컴포넌트 단위 설계에 익숙합니다. API 연동, 상태 관리, 배포 파이프라인까지
+              화면 뒤의 흐름까지 함께 책임지는 것을 지향합니다.
+            </p>
+            <p>
+              이 문단은 포트폴리오 템플릿 예시입니다. 실제 경력·성과·수치로 교체하면
+              신뢰도가 크게 올라갑니다.
+            </p>
+          </div>
+          <div>
+            <div class="tags" aria-label="키워드">
+              <span class="tag">React</span>
+              <span class="tag">TypeScript</span>
+              <span class="tag">Next.js</span>
+              <span class="tag">Vite</span>
+              <span class="tag">Tailwind CSS</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">Figma 협업</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="container">
+        <p class="section-title">Skills</p>
+        <h2>기술 스택</h2>
+        <div class="skills-wrap">
+          <article class="skill-card">
+            <h3>Frontend</h3>
+            <ul>
+              <li>컴포넌트 설계 · Storybook</li>
+              <li>반응형 · 모션(절제)</li>
+              <li>웹 접근성(ARIA, 키보드)</li>
+            </ul>
+          </article>
+          <article class="skill-card">
+            <h3>Quality</h3>
+            <ul>
+              <li>단위·통합 테스트</li>
+              <li>코드 리뷰 · 페어 프로그래밍</li>
+              <li>번들 분석 · 성능 개선</li>
+            </ul>
+          </article>
+          <article class="skill-card">
+            <h3>Collaboration</h3>
+            <ul>
+              <li>피그마 스펙 핸드오프</li>
+              <li>슬랙·노션 문서화</li>
+              <li>Git 워크플로우</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects" style="background: rgba(255,255,255,0.02);">
+      <div class="container">
+        <p class="section-title">Projects</p>
+        <h2>선택 프로젝트</h2>
+        <div class="projects-grid">
+          <article class="project-card">
+            <div class="project-thumb" aria-hidden="true">📊</div>
+            <div class="project-body">
+              <h3>대시보드 SaaS</h3>
+              <div class="project-meta">
+                <span class="pill">React</span>
+                <span class="pill">TS</span>
+                <span class="pill">Chart</span>
+              </div>
+              <p>필터·권한·대용량 테이블을 고려한 관리자 화면. 로딩·에러 UX 정리.</p>
+              <div class="project-links">
+                <a href="#" onclick="event.preventDefault(); alert('데모 URL을 넣어주세요.');">Live</a>
+                <a href="#" onclick="event.preventDefault(); alert('GitHub URL을 넣어주세요.');">GitHub</a>
+              </div>
+            </div>
+          </article>
+          <article class="project-card">
+            <div class="project-thumb" aria-hidden="true">🛒</div>
+            <div class="project-body">
+              <h3>커머스 랜딩</h3>
+              <div class="project-meta">
+                <span class="pill">Next.js</span>
+                <span class="pill">SEO</span>
+              </div>
+              <p>전환율 개선을 위한 히어로·FAQ·문의 폼 섹션 구조화.</p>
+              <div class="project-links">
+                <a href="#" onclick="event.preventDefault(); alert('데모 URL을 넣어주세요.');">Live</a>
+                <a href="#" onclick="event.preventDefault(); alert('GitHub URL을 넣어주세요.');">GitHub</a>
+              </div>
+            </div>
+          </article>
+          <article class="project-card">
+            <div class="project-thumb" aria-hidden="true">🔐</div>
+            <div class="project-body">
+              <h3>인증·온보딩 플로우</h3>
+              <div class="project-meta">
+                <span class="pill">API</span>
+                <span class="pill">Form</span>
+              </div>
+              <p>유효성 검사, 토스트, 가드 라우팅으로 이탈을 줄인 가입 경험.</p>
+              <div class="project-links">
+                <a href="#" onclick="event.preventDefault(); alert('데모 URL을 넣어주세요.');">Live</a>
+                <a href="#" onclick="event.preventDefault(); alert('GitHub URL을 넣어주세요.');">GitHub</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <p class="section-title">Contact</p>
+        <h2>함께 일하고 싶다면</h2>
+        <div class="contact-box">
+          <p>프로젝트 제안·채용 문의는 메일로 연락 주세요. 평균 1~2일 내 회신 드립니다.</p>
+          <a class="email-link" href="mailto:you@example.com">you@example.com</a>
+          <div class="socials" aria-label="소셜 링크">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" title="GitHub">GH</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn">in</a>
+            <a href="#" onclick="event.preventDefault(); alert('블로그나 이력서 PDF 링크를 넣어주세요.');" title="Blog">B</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© <span id="y"></span> · Portfolio — 본인 이름으로 수정 후 사용하세요.</p>
+  </footer>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+    var btn = document.getElementById("menu-btn");
+    var drawer = document.getElementById("drawer");
+    btn.addEventListener("click", function () {
+      var open = drawer.classList.toggle("open");
+      drawer.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "메뉴 닫기" : "메뉴 열기");
+      btn.textContent = open ? "✕" : "☰";
+    });
+    drawer.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        drawer.classList.remove("open");
+        drawer.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "메뉴 열기");
+        btn.textContent = "☰";
+      });
+    });
+  </script>
+</body>
+</html>
